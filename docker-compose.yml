@@ -1,0 +1,17 @@
+name: moodle_coolify
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: php_nginx
+    ports:
+      - "8000:80"
+    volumes:
+      - .:/var/www/html
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
