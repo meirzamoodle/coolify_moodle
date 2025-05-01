@@ -105,7 +105,7 @@ Visit the [Docker Hub page](https://hub.docker.com/r/klanjabrik/coolify-moodle/t
 | MOODLE_DB_PASS       | yes       | any value            | none                                     |       |
 | MOODLE_WWWROOT       | yes       | any valid URL        | none                                     |       |
 | MOODLE_ADMIN_USER    | no        | any value            | admin                                    |       |
-| MOODLE_ADMIN_PASS    | no        | any value            | 123                                      |       |
+| MOODLE_ADMIN_PASS    | no        | any value            | admin                                    |       |
 | MOODLE_ADMIN_EMAIL   | no        | any valid value      | admin@example.com                        |       |
 | MOODLE_SUPPORT_EMAIL | no        | any valid value      | support@example.com                      |       |
 
