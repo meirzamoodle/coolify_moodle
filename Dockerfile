@@ -1,5 +1,6 @@
 # Start with an official PHP + FPM base image
-FROM php:8.3-fpm
+ARG PHP_VERSION=8.4
+FROM php:${PHP_VERSION}-fpm
 
 # Install required dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -54,13 +55,11 @@ RUN /opt/venv/bin/pip install --no-cache-dir \
     pylint \
     numpy
 
-# Download and extract Moodle into /var/www/html
-ENV MOODLE_URL https://download.moodle.org/download.php/direct/stable405/moodle-latest-405.tgz
-
 # Copy application files
 WORKDIR /var/www/html
 
-RUN wget -O /tmp/moodle.tgz "$MOODLE_URL" \
+ARG MOODLE_VERSION
+RUN wget -O /tmp/moodle.tgz "https://download.moodle.org/download.php/direct/stable${MOODLE_VERSION}/moodle-latest-${MOODLE_VERSION}.tgz" \
     && tar -xzf /tmp/moodle.tgz --strip-components=1 -C /var/www/html \
     && chown -R www-data:www-data /var/www/html \
     && rm /tmp/moodle.tgz

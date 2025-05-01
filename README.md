@@ -27,8 +27,12 @@ This is a production-ready Docker image for the [Moodle LMS](https://moodle.org)
 ### 1. Build the image
 
 ```bash
- docker compose build --no-cache
+ docker compose build --no-cache --build-arg PHP_VERSION=8.4 --build-arg MOODLE_VERSION=500
 ```
+
+To find which PHP version is supported by the Moodle version, please see [Moodle releases](https://moodledev.io/general/releases).
+
+In this context, the Moodle version value is "500," which is used in [Git branches](https://github.com/moodle/moodle/branches) and refers to Moodle version 5.0.x.
 
 ### 2. See the image generated docker image name
 
@@ -45,39 +49,34 @@ services:
   app:
     image: 'moodle_coolify_app:latest'
     environment:
+      - SERVICE_FQDN_APP
+      - MOODLE_WWWROOT=$SERVICE_FQDN_APP
       - MOODLE_DB_TYPE=pgsql
       - MOODLE_DB_HOST=db
-      - MOODLE_DB_PORT=3306
       - MOODLE_DB_NAME=moodle
-      - MOODLE_DB_USER=moodle
-      - MOODLE_DB_PASS=moodle
-      - MOODLE_WWWROOT=http://localhost:8000
+      - MOODLE_DB_USER=$SERVICE_USER_POSTGRES
+      - MOODLE_DB_PASS=$SERVICE_PASSWORD_POSTGRES
       - MOODLE_ADMIN_USER=admin
-      - MOODLE_ADMIN_PASS=123
+      - MOODLE_ADMIN_PASS=admin
       - MOODLE_ADMIN_EMAIL=admin@example.com
       - MOODLE_SUPPORT_EMAIL=support@example.com
-    ports:
-      - '8000:80'
+      - MOODLE_FULLNAME=Coolify Moodle
+      - MOODLE_SHORTNAME=Coolify
     depends_on:
       - db
     volumes:
       - 'moodlecode:/var/www/html'
       - 'moodledata:/var/www/html/moodledata'
   db:
-    image: 'postgres:13'
+    image: 'postgres:14'
     container_name: moodle_db
     environment:
       - POSTGRES_DB=moodle
-      - POSTGRES_USER=moodle
-      - POSTGRES_PASSWORD=moodle
+      - POSTGRES_USER=$SERVICE_USER_POSTGRES
+      - POSTGRES_PASSWORD=$SERVICE_PASSWORD_POSTGRES
     volumes:
       - 'db_data:/var/lib/postgresql/data'
     restart: unless-stopped
-
-volumes:
-  moodlecode:
-  moodledata:
-  db_data:
 ```
 
 #### Pull image from the Docker Hub
@@ -87,7 +86,7 @@ Suppose you want to use the Docker image right away. You can pull it from the Do
 ```yaml
 services:
   app:
-    image: 'docker.io/klanjabrik/coolify-moodle:moodle4.5'
+    image: 'docker.io/klanjabrik/coolify-moodle:500_latest'
     ...
 ```
 
@@ -108,6 +107,8 @@ Visit the [Docker Hub page](https://hub.docker.com/r/klanjabrik/coolify-moodle/t
 | MOODLE_ADMIN_PASS    | no        | any value            | admin                                    |       |
 | MOODLE_ADMIN_EMAIL   | no        | any valid value      | admin@example.com                        |       |
 | MOODLE_SUPPORT_EMAIL | no        | any valid value      | support@example.com                      |       |
+| MOODLE_FULLNAME      | no        | any value            | Moodle                                   |       |
+| MOODLE_SHORTNAME     | no        | any value            | moodle                                   |       |
 
 ### 4. Run the service
 

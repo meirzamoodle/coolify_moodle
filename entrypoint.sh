@@ -19,6 +19,8 @@ MOODLE_ADMIN_USER="${MOODLE_ADMIN_USER:-admin}"
 MOODLE_ADMIN_PASS="${MOODLE_ADMIN_PASS:-admin}"
 MOODLE_ADMIN_EMAIL="${MOODLE_ADMIN_EMAIL:-admin@example.com}"
 MOODLE_SUPPORT_EMAIL="${MOODLE_SUPPORT_EMAIL:-support@example.com}"
+MOODLE_FULLNAME="${MOODLE_FULLNAME:-Moodle}"
+MOODLE_SHORTNAME="${MOODLE_SHORTNAME:-moodle}"
 
 # Check if the PostgreSQL database is ready.
 if [ "${MOODLE_DB_TYPE}" == "pgsql" ]; then
@@ -58,8 +60,8 @@ TABLE_COUNT="$(echo "$TABLE_COUNT" | xargs)"
 if [ "$TABLE_COUNT" -eq 0 ] 2>/dev/null; then
   echo "Running Moodle CLI database installation..."
   php /var/www/html/admin/cli/install_database.php \
-      --fullname="Moodle" \
-      --shortname="moodle" \
+      --fullname=$MOODLE_FULLNAME \
+      --shortname=$MOODLE_SHORTNAME \
       --adminuser=$MOODLE_ADMIN_USER \
       --adminpass=$MOODLE_ADMIN_PASS \
       --adminemail=$MOODLE_ADMIN_EMAIL \
