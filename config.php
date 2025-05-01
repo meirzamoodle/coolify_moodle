@@ -13,10 +13,10 @@ $CFG->prefix    = 'mdl_';
 $CFG->dboptions = [
     'dbpersist' => false,
     'dbsocket' => false,
-    'dbport' => getenv('MOODLE_DB_PORT') ?? '',
+    'dbport' => getenv('MOODLE_DB_PORT') ?: '',
 ];
 
-$CFG->reverseproxy = 1;
+$CFG->sslproxy = true;
 $CFG->wwwroot   = getenv('MOODLE_WWWROOT');
 $CFG->dataroot  = '/var/www/html/moodledata';
 

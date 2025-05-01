@@ -16,12 +16,12 @@ for var in DB_HOST DB_NAME DB_USER DB_PASS; do
 done
 
 MOODLE_ADMIN_USER="${MOODLE_ADMIN_USER:-admin}"
-MOODLE_ADMIN_PASS="${MOODLE_ADMIN_PASS:-AdminPass123}"
+MOODLE_ADMIN_PASS="${MOODLE_ADMIN_PASS:-admin}"
 MOODLE_ADMIN_EMAIL="${MOODLE_ADMIN_EMAIL:-admin@example.com}"
 MOODLE_SUPPORT_EMAIL="${MOODLE_SUPPORT_EMAIL:-support@example.com}"
 
 # Check if the PostgreSQL database is ready.
-if (${MOODLE_DB_TYPE} == "pgsql"); then
+if [ "${MOODLE_DB_TYPE}" == "pgsql" ]; then
   echo "Checking database readiness..."
   until PGPASSWORD="$DB_PASS" pg_isready -h "$DB_HOST" -U "$DB_USER" >/dev/null 2>&1; do
     echo "Waiting for database to be ready..."
