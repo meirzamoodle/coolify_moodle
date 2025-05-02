@@ -6,6 +6,7 @@ DB_HOST="${MOODLE_DB_HOST}"
 DB_NAME="${MOODLE_DB_NAME}"
 DB_USER="${MOODLE_DB_USER}"
 DB_PASS="${MOODLE_DB_PASS}"
+DB_PORT="${MOODLE_DB_PORT}"
 
 # Check required variables
 for var in DB_HOST DB_NAME DB_USER DB_PASS; do
@@ -14,6 +15,13 @@ for var in DB_HOST DB_NAME DB_USER DB_PASS; do
     exit 1
   fi
 done
+
+# Build port arguments for commands
+if [ -n "$DB_PORT" ]; then
+  PORT_ARG="-p $DB_PORT"
+else
+  PORT_ARG=""
+fi
 
 MOODLE_ADMIN_USER="${MOODLE_ADMIN_USER:-admin}"
 MOODLE_ADMIN_PASS="${MOODLE_ADMIN_PASS:-admin}"
@@ -25,13 +33,13 @@ MOODLE_SHORTNAME="${MOODLE_SHORTNAME:-moodle}"
 # Check if the PostgreSQL database is ready.
 if [ "${MOODLE_DB_TYPE}" == "pgsql" ]; then
   echo "Checking database readiness..."
-  until PGPASSWORD="$DB_PASS" pg_isready -h "$DB_HOST" -U "$DB_USER" >/dev/null 2>&1; do
+  until PGPASSWORD="$DB_PASS" pg_isready -h "$DB_HOST" -U "$DB_USER" $PORT_ARG >/dev/null 2>&1; do
     echo "Waiting for database to be ready..."
     sleep 2
   done
 
   echo "Checking if the '$DB_NAME' database has any tables..."
-  TABLE_COUNT=$(PGPASSWORD="$DB_PASS" psql -U "$DB_USER" -h "$DB_HOST" -d "$DB_NAME" -tAc \
+  TABLE_COUNT=$(PGPASSWORD="$DB_PASS" psql -U "$DB_USER" -h "$DB_HOST" $PORT_ARG -d "$DB_NAME" -tAc \
     "SELECT count(*)
     FROM pg_catalog.pg_tables
     WHERE schemaname NOT IN ('pg_catalog','information_schema');")
@@ -39,13 +47,13 @@ if [ "${MOODLE_DB_TYPE}" == "pgsql" ]; then
 # Check if the MySQL or MariaDB database is ready.
 elif [ "${MOODLE_DB_TYPE}" == "mysqli" ] || [ "${MOODLE_DB_TYPE}" == "mariadb" ]; then
   echo "Checking MySQL/MariaDB readiness..."
-  until mysqladmin ping -h"$DB_HOST" -u"$DB_USER" -p"$DB_PASS" --silent; do
+  until mysqladmin ping -h"$DB_HOST" -u"$DB_USER" -p"$DB_PASS" $PORT_ARG --silent; do
     echo "Waiting for database to be ready..."
     sleep 2
   done
 
   echo "Checking if the '$DB_NAME' database has any tables..."
-  TABLE_COUNT=$(mysql -h"$DB_HOST" -u"$DB_USER" -p"$DB_PASS" "$DB_NAME" -sN -e \
+  TABLE_COUNT=$(mysql -h"$DB_HOST" -u"$DB_USER" -p"$DB_PASS" $PORT_ARG "$DB_NAME" -sN -e \
     "SELECT COUNT(*) FROM information_schema.tables
     WHERE table_schema = '$DB_NAME'
     AND table_name NOT LIKE 'phinxlog';")
@@ -60,12 +68,12 @@ TABLE_COUNT="$(echo "$TABLE_COUNT" | xargs)"
 if [ "$TABLE_COUNT" -eq 0 ] 2>/dev/null; then
   echo "Running Moodle CLI database installation..."
   php /var/www/html/admin/cli/install_database.php \
-      --fullname=$MOODLE_FULLNAME \
-      --shortname=$MOODLE_SHORTNAME \
-      --adminuser=$MOODLE_ADMIN_USER \
-      --adminpass=$MOODLE_ADMIN_PASS \
-      --adminemail=$MOODLE_ADMIN_EMAIL \
-      --supportemail=$MOODLE_SUPPORT_EMAIL \
+      --fullname="$MOODLE_FULLNAME" \
+      --shortname="$MOODLE_SHORTNAME" \
+      --adminuser="$MOODLE_ADMIN_USER" \
+      --adminpass="$MOODLE_ADMIN_PASS" \
+      --adminemail="$MOODLE_ADMIN_EMAIL" \
+      --supportemail="$MOODLE_SUPPORT_EMAIL" \
       --agree-license
 fi
 

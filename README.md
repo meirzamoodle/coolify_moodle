@@ -53,6 +53,7 @@ services:
       - MOODLE_WWWROOT=$SERVICE_FQDN_APP
       - MOODLE_DB_TYPE=pgsql
       - MOODLE_DB_HOST=db
+      - MOODLE_DB_PORT=5432
       - MOODLE_DB_NAME=moodle
       - MOODLE_DB_USER=$SERVICE_USER_POSTGRES
       - MOODLE_DB_PASS=$SERVICE_PASSWORD_POSTGRES
@@ -109,6 +110,8 @@ Visit the [Docker Hub page](https://hub.docker.com/r/klanjabrik/coolify-moodle/t
 | MOODLE_SUPPORT_EMAIL | no        | any valid value      | support@example.com                      |       |
 | MOODLE_FULLNAME      | no        | any value            | Moodle                                   |       |
 | MOODLE_SHORTNAME     | no        | any value            | moodle                                   |       |
+| MOODLE_EXCLUDE_SSL   | no        | true or false        | false                                    |       |
+| MOODLE_REVERSE_PROXY | no        | true or false        | false                                    |       |
 
 ### 4. Run the service
 

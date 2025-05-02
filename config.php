@@ -16,7 +16,12 @@ $CFG->dboptions = [
     'dbport' => getenv('MOODLE_DB_PORT') ?: '',
 ];
 
-$CFG->sslproxy = true;
+$excludessl = filter_var(getenv('MOODLE_EXCLUDE_SSL') ?? false, FILTER_VALIDATE_BOOLEAN);
+$CFG->sslproxy = $excludessl ? !$excludessl : true;
+
+$reverseproxy = filter_var(getenv('MOODLE_REVERSE_PROXY') ?? false, FILTER_VALIDATE_BOOLEAN);
+$CFG->reverseproxy = $reverseproxy ?: false;
+
 $CFG->wwwroot   = getenv('MOODLE_WWWROOT');
 $CFG->dataroot  = '/var/www/html/moodledata';
 
