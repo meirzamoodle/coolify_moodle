@@ -87,11 +87,11 @@ Suppose you want to use the Docker image right away. You can pull it from the Do
 ```yaml
 services:
   app:
-    image: 'docker.io/klanjabrik/coolify-moodle:500_latest'
+    image: 'docker.io/meirzadotcom/coolify-moodle:500_latest'
     ...
 ```
 
-Visit the [Docker Hub page](https://hub.docker.com/r/klanjabrik/coolify-moodle/tags) for more complete tags.
+Visit the [Docker Hub page](https://hub.docker.com/r/meirzadotcom/coolify-moodle/tags) for more complete tags.
 
 #### Environment Variables
 
